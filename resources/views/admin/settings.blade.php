@@ -163,29 +163,51 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <!-- Election Date & Time Picker -->
-                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                    <label class="block text-xs font-bold text-brand-900 uppercase tracking-wider">
-                        ভোট গ্রহণের তারিখ ও সময় (কাউন্টডাউন লক্ষ্য) ⭐
-                    </label>
-                    @php
-                        $electionDateFormatted = '';
-                        if (!empty($settings->election_date)) {
-                            try {
-                                $electionDateFormatted = \Carbon\Carbon::parse($settings->election_date)->format('Y-m-d\TH:i');
-                            } catch (\Exception $e) {
-                                $electionDateFormatted = '2026-11-25T08:00';
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-brand-900 uppercase tracking-wider mb-1">
+                            ভোট গ্রহণের তারিখ ও সময় (কাউন্টডাউন লক্ষ্য) ⭐
+                        </label>
+                        @php
+                            $electionDateFormatted = '';
+                            if (!empty($settings->election_date)) {
+                                try {
+                                    $electionDateFormatted = \Carbon\Carbon::parse($settings->election_date)->format('Y-m-d\TH:i');
+                                } catch (\Exception $e) {
+                                    $electionDateFormatted = '2026-11-25T08:00';
+                                }
                             }
-                        }
-                    @endphp
-                    <input 
-                        type="datetime-local" 
-                        name="election_date" 
-                        value="{{ $electionDateFormatted }}" 
-                        class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-bold text-slate-800 focus:ring-2 focus:ring-emerald-600 focus:outline-none"
-                    >
-                    <p class="text-[11px] text-slate-500">
-                        হোমপেজের লাইভ কাউন্টডাউন টাইমার স্বয়ংক্রিয়ভাবে এই তারিখ ও সময় গণনা করবে।
-                    </p>
+                            $countdownSection = $sections->firstWhere('section_key', 'countdown');
+                            $isCountdownOn = $countdownSection ? $countdownSection->is_visible : ($settings->show_countdown ?? true);
+                        @endphp
+                        <input 
+                            type="datetime-local" 
+                            name="election_date" 
+                            value="{{ $electionDateFormatted }}" 
+                            class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-sm font-bold text-slate-800 focus:ring-2 focus:ring-emerald-600 focus:outline-none"
+                        >
+                    </div>
+
+                    <!-- Countdown ON/OFF Toggle Switch -->
+                    <div class="pt-2 border-t border-slate-200">
+                        <label class="flex items-center gap-2.5 cursor-pointer p-2.5 rounded-xl bg-amber-50/80 border border-amber-300">
+                            <input 
+                                type="checkbox" 
+                                name="show_countdown" 
+                                value="1" 
+                                {{ $isCountdownOn ? 'checked' : '' }} 
+                                class="w-5 h-5 rounded text-emerald-600 focus:ring-emerald-500 border-slate-300 cursor-pointer"
+                            >
+                            <div>
+                                <span class="text-xs sm:text-sm font-bold text-slate-900 block">
+                                    ভোট গ্রহণের লাইভ কাউন্টডাউন প্রদর্শন করুন (ON / OFF)
+                                </span>
+                                <span class="text-[11px] text-slate-600 block">
+                                    এটি বন্ধ (OFF) করলে হোমপেজের কাউন্টডাউন টাইমার বক্স লুকানো থাকবে।
+                                </span>
+                            </div>
+                        </label>
+                    </div>
                 </div>
 
                 <!-- Digital Support Count -->

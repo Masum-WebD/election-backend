@@ -11,6 +11,7 @@ use App\Models\GalleryItem;
 use App\Models\CampaignVideo;
 use App\Models\Endorsement;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class DashboardController extends Controller
 {
@@ -56,6 +57,12 @@ class DashboardController extends Controller
             $settings = CampaignSetting::first();
             if ($settings) {
                 $settings->show_symbol = $section->is_visible;
+                $settings->save();
+            }
+        } elseif ($section->section_key === 'countdown') {
+            $settings = CampaignSetting::first();
+            if ($settings && Schema::hasColumn('campaign_settings', 'show_countdown')) {
+                $settings->show_countdown = $section->is_visible;
                 $settings->save();
             }
         }
@@ -108,9 +115,20 @@ class DashboardController extends Controller
         $settings->email = $request->input('email', $settings->email);
         $settings->office_address = $request->input('office_address', $settings->office_address);
 
-        // 2. Election Countdown Date & Time
+        // 2. Election Countdown Date & Time & Toggle
         if ($request->filled('election_date')) {
             $settings->election_date = $request->input('election_date');
+        }
+        $showCountdown = $request->has('show_countdown') ? (bool) $request->input('show_countdown') : false;
+        if (Schema::hasColumn('campaign_settings', 'show_countdown')) {
+            $settings->show_countdown = $showCountdown;
+        }
+
+        // Sync countdown section visibility
+        $countdownSection = SectionSetting::where('section_key', 'countdown')->first();
+        if ($countdownSection) {
+            $countdownSection->is_visible = $showCountdown;
+            $countdownSection->save();
         }
 
         // 3. Digital Support Count (দোয়া ও সমর্থন সংখ্যা)

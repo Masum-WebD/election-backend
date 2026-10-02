@@ -13,6 +13,7 @@ use App\Models\Endorsement;
 use App\Models\Pledge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Schema;
 
 class CampaignApiController extends Controller
 {
@@ -93,6 +94,12 @@ class CampaignApiController extends Controller
             $settings = CampaignSetting::first();
             if ($settings) {
                 $settings->show_symbol = $section->is_visible;
+                $settings->save();
+            }
+        } elseif ($section->section_key === 'countdown') {
+            $settings = CampaignSetting::first();
+            if ($settings && Schema::hasColumn('campaign_settings', 'show_countdown')) {
+                $settings->show_countdown = $section->is_visible;
                 $settings->save();
             }
         }

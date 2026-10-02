@@ -2,19 +2,15 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 use Illuminate\Database\Seeder;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 
-class DatabaseSeeder extends Seeder
+class AdminUserSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // 1. Seed or Update Admin User
-        User::updateOrCreate(
+        $user = User::updateOrCreate(
             ['email' => 'admin@election.com'],
             [
                 'name' => 'অ্যাডমিন ম্যানেজার',
@@ -23,7 +19,8 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 2. Seed Campaign Data
-        $this->call(CampaignDatabaseSeeder::class);
+        $this->command->info("Admin User Created/Updated Successfully!");
+        $this->command->info("Email: admin@election.com");
+        $this->command->info("Password: admin123");
     }
 }

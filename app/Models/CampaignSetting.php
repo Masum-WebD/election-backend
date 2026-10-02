@@ -12,5 +12,7 @@ class CampaignSetting extends Model
         'stats' => 'array',
         'bio_data' => 'array',
         'election_date' => 'datetime',
+        'show_symbol' => 'boolean',
+        'show_countdown' => 'boolean',
     ];
 }

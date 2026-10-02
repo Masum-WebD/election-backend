@@ -133,10 +133,47 @@
             </div>
         </div>
 
+        <!-- SPECIAL PROMINENT COUNTDOWN MASTER SWITCH -->
+        @php
+            $countdownSection = $sections->firstWhere('section_key', 'countdown');
+            $isCountdownOn = $countdownSection ? $countdownSection->is_visible : ($settings->show_countdown ?? true);
+        @endphp
+        <div class="mb-6 p-5 sm:p-6 rounded-2xl border-2 {{ $isCountdownOn ? 'bg-gradient-to-r from-blue-50 to-emerald-50/50 border-blue-400/80 shadow-sm' : 'bg-slate-50 border-slate-300 opacity-90' }} transition-all">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div class="flex items-center gap-4">
+                    <div class="w-14 h-14 rounded-2xl bg-white border-2 {{ $isCountdownOn ? 'border-blue-400 text-blue-600' : 'border-slate-300 text-slate-400' }} shadow-md flex items-center justify-center text-2xl shrink-0">
+                        ⏱️
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h3 class="text-base sm:text-lg font-extrabold text-brand-950">
+                                ভোট গ্রহণের লাইভ কাউন্টডাউন টাইমার (Countdown Box)
+                            </h3>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-black {{ $isCountdownOn ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white' }}">
+                                {{ $isCountdownOn ? 'কাউন্টডাউন দৃশ্যমান (ON)' : 'কাউন্টডাউন লুকানো (OFF)' }}
+                            </span>
+                        </div>
+                        <p class="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
+                            হোমপেজের হিরো ব্যানারে নির্বাচনের বাকি দিন, ঘণ্টা, মিনিট ও সেকেন্ড গণনার ঘড়িটি প্রদর্শন বা বন্ধ রাখার জন্য এই সুইচটি ব্যবহার করুন।
+                        </p>
+                    </div>
+                </div>
+
+                @if($countdownSection)
+                <form action="{{ route('admin.sections.toggle', $countdownSection->id) }}" method="POST" class="shrink-0 self-end sm:self-center">
+                    @csrf
+                    <button type="submit" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-xs sm:text-sm shadow-md transition-all transform hover:-translate-y-0.5 {{ $isCountdownOn ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-emerald-700 hover:bg-emerald-800 text-white' }}">
+                        <span>{{ $isCountdownOn ? 'কাউন্টডাউন বন্ধ করুন (Turn OFF)' : 'কাউন্টডাউন চালু করুন (Turn ON)' }}</span>
+                    </button>
+                </form>
+                @endif
+            </div>
+        </div>
+
         <!-- SECTIONS TOGGLE GRID -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach($sections as $sec)
-                @if($sec->section_key !== 'symbol')
+                @if($sec->section_key !== 'symbol' && $sec->section_key !== 'countdown')
                 <div class="p-4 rounded-2xl border transition-all duration-200 {{ $sec->is_visible ? 'bg-slate-50/70 border-slate-200 hover:border-emerald-300' : 'bg-red-50/30 border-red-200/60 opacity-75' }} flex items-center justify-between gap-3">
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-2">
